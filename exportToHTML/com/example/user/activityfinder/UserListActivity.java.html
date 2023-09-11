@@ -1,0 +1,77 @@
+<html>
+<head>
+<title>UserListActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #999999; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { color: rgb(0,0,0); }
+.s2 { color: rgb(0,128,0); font-weight: bold; }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+UserListActivity.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">package </span><span class="s1">com.example.user.activityfinder; 
+ 
+</span><span class="s0">import </span><span class="s1">android.support.v7.app.AppCompatActivity; 
+</span><span class="s0">import </span><span class="s1">android.os.Bundle; 
+</span><span class="s0">import </span><span class="s1">android.support.v7.widget.LinearLayoutManager; 
+</span><span class="s0">import </span><span class="s1">android.support.v7.widget.RecyclerView; 
+</span><span class="s0">import </span><span class="s1">android.util.Log; 
+</span><span class="s0">import </span><span class="s1">android.widget.Toast; 
+</span><span class="s0">import </span><span class="s1">com.firebase.ui.database.FirebaseRecyclerAdapter; 
+</span><span class="s0">import </span><span class="s1">com.google.firebase.database.Query; 
+ 
+</span><span class="s0">import </span><span class="s1">java.util.ArrayList; 
+</span><span class="s0">import </span><span class="s1">java.util.List; 
+ 
+</span><span class="s0">import static </span><span class="s1">com.example.user.activityfinder.LoginActivity.loggeduser; 
+</span><span class="s0">import static </span><span class="s1">com.example.user.activityfinder.MainActivity.UserRef; 
+ 
+ 
+</span><span class="s0">public class </span><span class="s1">UserListActivity </span><span class="s0">extends </span><span class="s1">AppCompatActivity { 
+   </span><span class="s0">public </span><span class="s1">RecyclerView userRecycler; 
+    </span><span class="s0">public </span><span class="s1">Query userQuery; 
+   </span><span class="s0">public static </span><span class="s1">FirebaseRecyclerAdapter firebaseRecyclerAdapter; 
+    </span><span class="s0">public static </span><span class="s1">ArrayList&lt;User&gt; userList=</span><span class="s0">new </span><span class="s1">ArrayList(); 
+    @Override 
+    </span><span class="s0">protected void </span><span class="s1">onCreate(Bundle savedInstanceState) { 
+        </span><span class="s0">super</span><span class="s1">.onCreate(savedInstanceState); 
+        setContentView(R.layout.activity_user_list); 
+        userRecycler=findViewById(R.id.userRecycler); 
+        userRecycler.setHasFixedSize(</span><span class="s0">true</span><span class="s1">); 
+        userRecycler.setLayoutManager(</span><span class="s0">new </span><span class="s1">LinearLayoutManager(UserListActivity.</span><span class="s0">this</span><span class="s1">)); 
+        insertUsers(); 
+    } 
+ 
+    </span><span class="s0">private void </span><span class="s1">insertUsers(){ 
+ 
+ 
+        userQuery=UserRef.orderByChild(</span><span class="s2">&quot;category&quot;</span><span class="s1">).equalTo(loggeduser.getCategory()); 
+        firebaseRecyclerAdapter=</span><span class="s0">new </span><span class="s1">FirebaseRecyclerAdapter&lt;User,UserViewHolder&gt;(User.</span><span class="s0">class</span><span class="s1">,R.layout.card_view_user, 
+                UserViewHolder.</span><span class="s0">class</span><span class="s1">,userQuery) { 
+            @Override 
+            </span><span class="s0">protected void </span><span class="s1">populateViewHolder(UserViewHolder viewHolder, User model, </span><span class="s0">int </span><span class="s1">position) { 
+                Log.i(</span><span class="s2">&quot;AAA&quot;</span><span class="s1">,model.getFirstName()); 
+                viewHolder.setName(model.getFirstName()+</span><span class="s2">&quot; &quot;</span><span class="s1">+model.getLastName()); 
+                viewHolder.setAge(String.valueOf(model.getAge())); 
+                viewHolder.setGender(model.getGender()); 
+                userList.add(model); 
+            } 
+ 
+        }; 
+        userRecycler.setAdapter(firebaseRecyclerAdapter); 
+ 
+    } 
+ 
+     
+ 
+} 
+</span></pre>
+</body>
+</html>

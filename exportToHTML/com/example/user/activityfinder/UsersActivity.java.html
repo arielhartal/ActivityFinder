@@ -1,0 +1,125 @@
+<html>
+<head>
+<title>UsersActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #999999; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { color: rgb(0,0,0); }
+.s2 { color: rgb(0,128,0); font-weight: bold; }
+.s3 { color: rgb(128,128,128); font-style: italic; }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+UsersActivity.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">package </span><span class="s1">com.example.user.activityfinder; 
+ 
+</span><span class="s0">import </span><span class="s1">android.content.Intent; 
+</span><span class="s0">import </span><span class="s1">android.support.annotation.NonNull; 
+</span><span class="s0">import </span><span class="s1">android.support.v7.app.AppCompatActivity; 
+</span><span class="s0">import </span><span class="s1">android.os.Bundle; 
+</span><span class="s0">import </span><span class="s1">android.view.View; 
+</span><span class="s0">import </span><span class="s1">android.widget.AdapterView; 
+</span><span class="s0">import </span><span class="s1">android.widget.ArrayAdapter; 
+</span><span class="s0">import </span><span class="s1">android.widget.ListView; 
+</span><span class="s0">import </span><span class="s1">android.widget.Spinner; 
+ 
+</span><span class="s0">import </span><span class="s1">com.google.firebase.database.DataSnapshot; 
+</span><span class="s0">import </span><span class="s1">com.google.firebase.database.DatabaseError; 
+</span><span class="s0">import </span><span class="s1">com.google.firebase.database.DatabaseReference; 
+</span><span class="s0">import </span><span class="s1">com.google.firebase.database.FirebaseDatabase; 
+</span><span class="s0">import </span><span class="s1">com.google.firebase.database.Query; 
+</span><span class="s0">import </span><span class="s1">com.google.firebase.database.ValueEventListener; 
+ 
+</span><span class="s0">import </span><span class="s1">java.util.ArrayList; 
+</span><span class="s0">import </span><span class="s1">java.util.HashSet; 
+</span><span class="s0">import </span><span class="s1">java.util.Iterator; 
+</span><span class="s0">import </span><span class="s1">java.util.Set; 
+ 
+</span><span class="s0">import static </span><span class="s1">com.example.user.activityfinder.MainActivity.UserRef; 
+ 
+</span><span class="s0">public class </span><span class="s1">UsersActivity </span><span class="s0">extends </span><span class="s1">AppCompatActivity { 
+    </span><span class="s0">private </span><span class="s1">View usersActivityView; 
+    </span><span class="s0">private </span><span class="s1">ListView listviewUsers; 
+    </span><span class="s0">private </span><span class="s1">ArrayAdapter&lt;String&gt; arrayAdapter; 
+    </span><span class="s0">private </span><span class="s1">ArrayList&lt;String&gt; list_of_users = </span><span class="s0">new </span><span class="s1">ArrayList&lt;&gt;(); 
+    </span><span class="s0">private </span><span class="s1">DatabaseReference UserRef; 
+    </span><span class="s0">public </span><span class="s1">Query usersQuery; 
+    Spinner spinner; 
+ 
+    @Override 
+    </span><span class="s0">protected void </span><span class="s1">onCreate(Bundle savedInstanceState) { 
+        </span><span class="s0">super</span><span class="s1">.onCreate(savedInstanceState); 
+        setContentView(R.layout.activity_users); 
+ 
+        UserRef = FirebaseDatabase.getInstance().getReference().child(</span><span class="s2">&quot;Users&quot;</span><span class="s1">); 
+        InitalizeFields(); 
+        RetriveAndDisplayUsers(); 
+        listviewUsers.setOnItemClickListener(</span><span class="s0">new </span><span class="s1">AdapterView.OnItemClickListener() { 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onItemClick(AdapterView&lt;?&gt; adapterView, View view, </span><span class="s0">int </span><span class="s1">position, </span><span class="s0">long </span><span class="s1">id) 
+            { 
+                String currentUserName = adapterView.getItemAtPosition(position).toString(); 
+ 
+                Intent groupChatIntent = </span><span class="s0">new </span><span class="s1">Intent(UsersActivity.</span><span class="s0">this</span><span class="s1">, GroupsChatActivity.</span><span class="s0">class</span><span class="s1">); 
+                groupChatIntent.putExtra(</span><span class="s2">&quot;groupName&quot; </span><span class="s1">, currentUserName); 
+                startActivity(groupChatIntent); 
+            } 
+        }); 
+ 
+ 
+    } 
+    </span><span class="s0">private void </span><span class="s1">InitalizeFields() 
+    { 
+        listviewUsers = (ListView) findViewById(R.id.listviewUsers); 
+        arrayAdapter = </span><span class="s0">new </span><span class="s1">ArrayAdapter&lt;String&gt;(getApplicationContext(), android.R.layout.simple_list_item_1, list_of_users); 
+        listviewUsers.setAdapter(arrayAdapter); 
+    } 
+ 
+ 
+    </span><span class="s0">private void </span><span class="s1">RetriveAndDisplayUsers() 
+    { 
+        UserRef.addValueEventListener(</span><span class="s0">new </span><span class="s1">ValueEventListener() { 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onDataChange(@NonNull DataSnapshot dataSnapshot) 
+            { 
+                Set&lt;String&gt; set = </span><span class="s0">new </span><span class="s1">HashSet&lt;&gt;(); 
+                Iterator iterator = dataSnapshot.getChildren().iterator(); 
+ 
+                </span><span class="s0">while </span><span class="s1">(iterator.hasNext()) 
+                { 
+                    set.add(((DataSnapshot)iterator.next()).getKey()); 
+                } 
+ 
+             </span><span class="s3">/*   for (DataSnapshot snap :dataSnapshot.getChildren()) { 
+ 
+ 
+                    String eventFromFB=snap.child(&quot;category&quot;).getValue(String.class); 
+                    String nameFromFB = snap.child(&quot;name&quot;).getValue(String.class); 
+                    if (categoryFromFB.equals(SearchActivity.category)) 
+                    { 
+                        set.add(nameFromFB); 
+                    } 
+                } 
+*/</span><span class="s1"> 
+ 
+                list_of_users.clear(); 
+                list_of_users.addAll(set); 
+ 
+                arrayAdapter.notifyDataSetChanged(); 
+            } 
+ 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onCancelled(@NonNull DatabaseError databaseError) { 
+ 
+            } 
+        }) ; 
+}} 
+</span></pre>
+</body>
+</html>
