@@ -1,0 +1,75 @@
+<html>
+<head>
+<title>ListActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #999999; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { color: rgb(0,0,0); }
+.s2 { color: rgb(0,128,0); font-weight: bold; }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+ListActivity.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">package </span><span class="s1">com.example.user.activityfinder; 
+ 
+</span><span class="s0">import </span><span class="s1">android.support.annotation.NonNull; 
+</span><span class="s0">import </span><span class="s1">android.support.v7.app.AppCompatActivity; 
+</span><span class="s0">import </span><span class="s1">android.os.Bundle; 
+</span><span class="s0">import </span><span class="s1">android.widget.ArrayAdapter; 
+</span><span class="s0">import </span><span class="s1">android.widget.ListView; 
+ 
+</span><span class="s0">import </span><span class="s1">com.google.firebase.database.DataSnapshot; 
+</span><span class="s0">import </span><span class="s1">com.google.firebase.database.DatabaseError; 
+</span><span class="s0">import </span><span class="s1">com.google.firebase.database.DatabaseReference; 
+</span><span class="s0">import </span><span class="s1">com.google.firebase.database.FirebaseDatabase; 
+</span><span class="s0">import </span><span class="s1">com.google.firebase.database.ValueEventListener; 
+ 
+</span><span class="s0">import </span><span class="s1">java.util.ArrayList; 
+ 
+</span><span class="s0">public class </span><span class="s1">ListActivity </span><span class="s0">extends </span><span class="s1">AppCompatActivity { 
+ 
+    FirebaseDatabase database; 
+    DatabaseReference ref; 
+    ListView listView; 
+    ArrayList&lt;String&gt; list; 
+    ArrayAdapter&lt;String&gt; adapter; 
+    User user ; 
+    @Override 
+    </span><span class="s0">protected void </span><span class="s1">onCreate(Bundle savedInstanceState) { 
+        </span><span class="s0">super</span><span class="s1">.onCreate(savedInstanceState); 
+        setContentView(R.layout.activity_list); 
+ 
+        user = </span><span class="s0">new </span><span class="s1">User(); 
+        listView=(ListView) findViewById(R.id.listView); 
+        database= FirebaseDatabase.getInstance(); 
+        ref= database.getReference(</span><span class="s2">&quot;Users&quot;</span><span class="s1">); 
+        list = </span><span class="s0">new </span><span class="s1">ArrayList&lt;&gt;(); 
+        adapter = </span><span class="s0">new </span><span class="s1">ArrayAdapter&lt;String&gt;(</span><span class="s0">this</span><span class="s1">, R.layout.user_info,R.id.userInfo, list); 
+        ref.addValueEventListener(</span><span class="s0">new </span><span class="s1">ValueEventListener() { 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onDataChange(@NonNull DataSnapshot dataSnapshot) { 
+                </span><span class="s0">for</span><span class="s1">(DataSnapshot ds: dataSnapshot.getChildren()) 
+                { 
+ 
+                    user = ds.getValue(User.</span><span class="s0">class</span><span class="s1">); 
+                    list.add(user.getFirstName().toString()+ </span><span class="s2">&quot; &quot;</span><span class="s1">+user.getLastName().toString()+</span><span class="s2">&quot; &quot;</span><span class="s1">+user.getGender().toString()); 
+                } 
+                listView.setAdapter(adapter); 
+            } 
+ 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onCancelled(@NonNull DatabaseError databaseError) { 
+ 
+            } 
+        }); 
+    } 
+} 
+</span></pre>
+</body>
+</html>

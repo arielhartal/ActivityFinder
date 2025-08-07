@@ -1,0 +1,71 @@
+<html>
+<head>
+<title>EventListActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #999999; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { color: rgb(0,0,0); }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+.s3 { color: rgb(0,128,0); font-weight: bold; }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+EventListActivity.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">package </span><span class="s1">com.example.user.activityfinder; 
+ 
+</span><span class="s0">import </span><span class="s1">android.content.Intent; 
+</span><span class="s0">import </span><span class="s1">android.support.v7.app.AppCompatActivity; 
+</span><span class="s0">import </span><span class="s1">android.os.Bundle; 
+</span><span class="s0">import </span><span class="s1">android.support.v7.widget.LinearLayoutManager; 
+</span><span class="s0">import </span><span class="s1">android.support.v7.widget.RecyclerView; 
+</span><span class="s0">import </span><span class="s1">android.util.Log; 
+ 
+</span><span class="s0">import </span><span class="s1">com.firebase.ui.database.FirebaseRecyclerAdapter; 
+</span><span class="s0">import </span><span class="s1">com.google.firebase.database.Query; 
+ 
+</span><span class="s0">import </span><span class="s1">java.util.ArrayList; 
+ 
+</span><span class="s0">import static </span><span class="s1">com.example.user.activityfinder.LoginActivity.loggeduser; 
+</span><span class="s0">import static </span><span class="s1">com.example.user.activityfinder.MainActivity.UserRef; 
+</span><span class="s0">import static </span><span class="s1">com.example.user.activityfinder.MainActivity.EventRef; 
+</span><span class="s0">public class </span><span class="s1">EventListActivity </span><span class="s0">extends </span><span class="s1">AppCompatActivity { 
+ 
+    </span><span class="s0">public </span><span class="s1">RecyclerView eventRecycler; 
+    </span><span class="s0">public </span><span class="s1">Query eventQuery; 
+    </span><span class="s0">public static </span><span class="s1">FirebaseRecyclerAdapter firebaseRecyclerAdapter; 
+    </span><span class="s0">public static </span><span class="s1">ArrayList&lt;Event&gt; eventList=</span><span class="s0">new </span><span class="s1">ArrayList(); 
+    @Override 
+    </span><span class="s0">protected void </span><span class="s1">onCreate(Bundle savedInstanceState) { 
+        </span><span class="s0">super</span><span class="s1">.onCreate(savedInstanceState); 
+        setContentView(R.layout.activity_event_list); 
+        eventRecycler=findViewById(R.id.eventRecycler); 
+        eventRecycler.setHasFixedSize(</span><span class="s0">true</span><span class="s1">); 
+        eventRecycler.setLayoutManager(</span><span class="s0">new </span><span class="s1">LinearLayoutManager(EventListActivity.</span><span class="s0">this</span><span class="s1">)); 
+        insertEvents(); 
+        startActivity(</span><span class="s0">new </span><span class="s1">Intent(EventListActivity.</span><span class="s0">this</span><span class="s1">,MapsActivity.</span><span class="s0">class</span><span class="s1">)); 
+    } 
+    </span><span class="s0">private void </span><span class="s1">insertEvents(){ 
+ 
+</span><span class="s2">//Adding the events to the list if the event has the same category that was chose</span><span class="s1"> 
+        eventQuery=EventRef.orderByChild(</span><span class="s3">&quot;category&quot;</span><span class="s1">).equalTo(SearchActivity.category); 
+        firebaseRecyclerAdapter=</span><span class="s0">new </span><span class="s1">FirebaseRecyclerAdapter&lt;Event,EventViewHolder&gt;(Event.</span><span class="s0">class</span><span class="s1">,R.layout.card_view_event, 
+                EventViewHolder.</span><span class="s0">class</span><span class="s1">,eventQuery) { 
+            @Override 
+            </span><span class="s0">protected void </span><span class="s1">populateViewHolder(EventViewHolder viewHolder, Event model, </span><span class="s0">int </span><span class="s1">position) { 
+                Log.i(</span><span class="s3">&quot;AAA&quot;</span><span class="s1">,model.getName()); 
+                viewHolder.setName(model.getName()); 
+                eventList.add(model); 
+            } 
+ 
+        }; 
+        eventRecycler.setAdapter(firebaseRecyclerAdapter); 
+}} 
+</span></pre>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<html>
+<head>
+<title>LoginActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #999999; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { color: rgb(0,0,0); }
+.s2 { color: rgb(0,128,0); font-weight: bold; }
+.s3 { color: rgb(128,128,128); font-style: italic; }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+LoginActivity.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">package </span><span class="s1">com.example.user.activityfinder; 
+ 
+</span><span class="s0">import </span><span class="s1">android.content.Intent; 
+</span><span class="s0">import </span><span class="s1">android.support.annotation.NonNull; 
+</span><span class="s0">import </span><span class="s1">android.support.v7.app.AppCompatActivity; 
+</span><span class="s0">import </span><span class="s1">android.os.Bundle; 
+</span><span class="s0">import </span><span class="s1">android.util.Log; 
+</span><span class="s0">import </span><span class="s1">android.view.View; 
+</span><span class="s0">import </span><span class="s1">android.widget.Button; 
+</span><span class="s0">import </span><span class="s1">android.widget.EditText; 
+</span><span class="s0">import </span><span class="s1">android.widget.Toast; 
+ 
+</span><span class="s0">import </span><span class="s1">com.google.firebase.database.DataSnapshot; 
+</span><span class="s0">import </span><span class="s1">com.google.firebase.database.DatabaseError; 
+</span><span class="s0">import </span><span class="s1">com.google.firebase.database.ValueEventListener; 
+ 
+</span><span class="s0">import static </span><span class="s1">com.example.user.activityfinder.MainActivity.UserRef; 
+ 
+</span><span class="s0">public class </span><span class="s1">LoginActivity </span><span class="s0">extends </span><span class="s1">AppCompatActivity { 
+    EditText edtemail; 
+    EditText edtPassword; 
+    Button btnSign; 
+    </span><span class="s0">public static </span><span class="s1">User loggeduser; 
+    @Override 
+    </span><span class="s0">protected void </span><span class="s1">onCreate(Bundle savedInstanceState) { 
+        </span><span class="s0">super</span><span class="s1">.onCreate(savedInstanceState); 
+        setContentView(R.layout.activity_login); 
+        edtemail = (EditText) findViewById(R.id.edtEmail); 
+        edtPassword = (EditText) findViewById(R.id.edtPassword); 
+        btnSign = (Button) findViewById(R.id.btnSign); 
+        btnSign.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() { 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onClick(View view) { 
+                </span><span class="s0">final </span><span class="s1">String email = edtemail.getText().toString(); 
+                </span><span class="s0">final </span><span class="s1">String userID=email.replace(</span><span class="s2">'.'</span><span class="s1">,</span><span class="s2">','</span><span class="s1">); 
+                </span><span class="s0">final </span><span class="s1">String password = edtPassword.getText().toString(); 
+                </span><span class="s3">//Takes the values of the logged user and checking if the user exists in the firebase database with datasnapshot</span><span class="s1"> 
+               UserRef.addValueEventListener(</span><span class="s0">new </span><span class="s1">ValueEventListener() { 
+                   @Override 
+                   </span><span class="s0">public void </span><span class="s1">onDataChange(@NonNull DataSnapshot dataSnapshot) { 
+                       </span><span class="s0">if</span><span class="s1">(dataSnapshot.child(userID).exists()) 
+                       { 
+                           User login=dataSnapshot.child(userID).getValue(User.</span><span class="s0">class</span><span class="s1">); 
+                           </span><span class="s0">if</span><span class="s1">(login.getPassword().equals(password)) 
+                           { 
+                               Toast.makeText(LoginActivity.</span><span class="s0">this</span><span class="s1">,</span><span class="s2">&quot;Logged In&quot;</span><span class="s1">,Toast.LENGTH_LONG).show(); 
+                               loggeduser=login; 
+                               startActivity(</span><span class="s0">new </span><span class="s1">Intent(LoginActivity.</span><span class="s0">this</span><span class="s1">, ChooseActivity.</span><span class="s0">class</span><span class="s1">)); 
+                           } 
+                           </span><span class="s0">else </span><span class="s1">{ 
+                               Toast.makeText(LoginActivity.</span><span class="s0">this</span><span class="s1">,</span><span class="s2">&quot;Failed&quot;</span><span class="s1">,Toast.LENGTH_LONG).show(); 
+                           } 
+                       } 
+                       </span><span class="s0">else </span><span class="s1">{ 
+                           Toast.makeText(LoginActivity.</span><span class="s0">this</span><span class="s1">,</span><span class="s2">&quot;Failed&quot;</span><span class="s1">,Toast.LENGTH_LONG).show(); 
+                       } 
+ 
+                   } 
+ 
+                   @Override 
+                   </span><span class="s0">public void </span><span class="s1">onCancelled(@NonNull DatabaseError databaseError) { 
+                       Toast.makeText(LoginActivity.</span><span class="s0">this</span><span class="s1">, databaseError.getMessage(), Toast.LENGTH_SHORT).show(); 
+ 
+                   } 
+               }); 
+ 
+            } 
+        }); 
+ 
+    } 
+} 
+</span></pre>
+</body>
+</html>

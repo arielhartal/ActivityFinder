@@ -1,0 +1,136 @@
+<html>
+<head>
+<title>User.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #999999; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { color: rgb(0,0,0); }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+.s3 { color: rgb(0,128,0); font-weight: bold; }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+User.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">package </span><span class="s1">com.example.user.activityfinder; 
+ 
+</span><span class="s0">public class </span><span class="s1">User { 
+    </span><span class="s0">private </span><span class="s1">String email; 
+    </span><span class="s0">private </span><span class="s1">String userid; 
+    </span><span class="s0">private </span><span class="s1">String password; 
+    </span><span class="s0">private </span><span class="s1">String firstName; 
+    </span><span class="s0">private </span><span class="s1">String lastName; 
+    </span><span class="s0">private int </span><span class="s1">age; 
+    </span><span class="s0">private </span><span class="s1">String gender; 
+    </span><span class="s0">private </span><span class="s1">String category; 
+    </span><span class="s0">private </span><span class="s1">String event; 
+    </span><span class="s0">private </span><span class="s1">String address; 
+ 
+    </span><span class="s0">public </span><span class="s1">User() {} 
+ 
+ 
+ 
+    </span><span class="s0">public </span><span class="s1">User(String email, String password, String firstName, String lastName, </span><span class="s0">int </span><span class="s1">age, String 
+        gender,String userid, </span><span class="s2">/*String category,*/</span><span class="s1">String event,String address){ 
+            </span><span class="s0">this</span><span class="s1">.email = email; 
+            </span><span class="s0">this</span><span class="s1">.password = password; 
+            </span><span class="s0">this</span><span class="s1">.firstName = firstName; 
+            </span><span class="s0">this</span><span class="s1">.lastName = lastName; 
+            </span><span class="s0">this</span><span class="s1">.age = age; 
+            </span><span class="s0">this</span><span class="s1">.gender = gender; 
+            </span><span class="s0">this</span><span class="s1">.userid = email.replace(</span><span class="s3">'.'</span><span class="s1">, </span><span class="s3">','</span><span class="s1">); 
+            </span><span class="s0">this</span><span class="s1">.category = </span><span class="s3">&quot;&quot;</span><span class="s1">; 
+            </span><span class="s0">this</span><span class="s1">.event=event; 
+            </span><span class="s0">this</span><span class="s1">.address=address; 
+        } 
+ 
+    </span><span class="s0">public </span><span class="s1">String getAddress() { 
+        </span><span class="s0">return </span><span class="s1">address; 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">setAddress(String address) { 
+        </span><span class="s0">this</span><span class="s1">.address = address; 
+    } 
+ 
+    </span><span class="s0">public </span><span class="s1">String getCategory() { 
+        </span><span class="s0">return </span><span class="s1">category; 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">setCategory(String category) { 
+        </span><span class="s0">this</span><span class="s1">.category = category; 
+    } 
+ 
+   </span><span class="s0">public </span><span class="s1">String getEvent() { 
+        </span><span class="s0">return </span><span class="s1">event; 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">setEvent(String event) { 
+        </span><span class="s0">this</span><span class="s1">.event = event; 
+    } 
+ 
+    </span><span class="s0">public </span><span class="s1">String getEmail () { 
+            </span><span class="s0">return </span><span class="s1">email; 
+        } 
+ 
+        </span><span class="s0">public void </span><span class="s1">setEmail (String email){ 
+            </span><span class="s0">this</span><span class="s1">.email = email; 
+        } 
+ 
+        </span><span class="s0">public </span><span class="s1">String getUserid () { 
+            </span><span class="s0">return </span><span class="s1">userid; 
+        } 
+ 
+        </span><span class="s0">public void </span><span class="s1">setUserid (String userid){ 
+            </span><span class="s0">this</span><span class="s1">.userid = userid; 
+        } 
+ 
+        </span><span class="s0">public </span><span class="s1">String getPassword () { 
+            </span><span class="s0">return </span><span class="s1">password; 
+        } 
+ 
+        </span><span class="s0">public void </span><span class="s1">setPassword (String password){ 
+            </span><span class="s0">this</span><span class="s1">.password = password; 
+        } 
+ 
+        </span><span class="s0">public </span><span class="s1">String getFirstName () { 
+            </span><span class="s0">return </span><span class="s1">firstName; 
+        } 
+ 
+        </span><span class="s0">public void </span><span class="s1">setFirstName (String firstName){ 
+            </span><span class="s0">this</span><span class="s1">.firstName = firstName; 
+        } 
+ 
+        </span><span class="s0">public </span><span class="s1">String getLastName () { 
+            </span><span class="s0">return </span><span class="s1">lastName; 
+        } 
+ 
+        </span><span class="s0">public void </span><span class="s1">setLastName (String lastName){ 
+            </span><span class="s0">this</span><span class="s1">.lastName = lastName; 
+        } 
+ 
+        </span><span class="s0">public int </span><span class="s1">getAge () { 
+            </span><span class="s0">return </span><span class="s1">age; 
+        } 
+ 
+        </span><span class="s0">public void </span><span class="s1">setAge ( </span><span class="s0">int </span><span class="s1">age){ 
+            </span><span class="s0">this</span><span class="s1">.age = age; 
+        } 
+ 
+        </span><span class="s0">public </span><span class="s1">String getGender () { 
+            </span><span class="s0">return </span><span class="s1">gender; 
+        } 
+ 
+        </span><span class="s0">public void </span><span class="s1">setGender (String gender){ 
+            </span><span class="s0">this</span><span class="s1">.gender = gender; 
+        } 
+ 
+ 
+    } 
+</span></pre>
+</body>
+</html>

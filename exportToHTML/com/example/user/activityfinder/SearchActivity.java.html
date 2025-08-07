@@ -1,0 +1,98 @@
+<html>
+<head>
+<title>SearchActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #999999; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { color: rgb(0,0,0); }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+.s3 { color: rgb(0,128,0); font-weight: bold; }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+SearchActivity.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">package </span><span class="s1">com.example.user.activityfinder; 
+ 
+</span><span class="s0">import </span><span class="s1">android.content.Intent; 
+</span><span class="s0">import </span><span class="s1">android.content.pm.PackageManager; 
+</span><span class="s0">import </span><span class="s1">android.location.Address; 
+</span><span class="s0">import </span><span class="s1">android.location.Geocoder; 
+</span><span class="s0">import </span><span class="s1">android.support.annotation.NonNull; 
+</span><span class="s0">import </span><span class="s1">android.support.v4.content.ContextCompat; 
+</span><span class="s0">import </span><span class="s1">android.support.v7.app.AppCompatActivity; 
+</span><span class="s0">import </span><span class="s1">android.os.Bundle; 
+</span><span class="s0">import </span><span class="s1">android.view.View; 
+</span><span class="s0">import </span><span class="s1">android.widget.Button; 
+</span><span class="s0">import </span><span class="s1">android.widget.EditText; 
+</span><span class="s0">import </span><span class="s1">android.widget.Spinner; 
+ 
+ 
+</span><span class="s0">import </span><span class="s1">com.google.firebase.database.DataSnapshot; 
+</span><span class="s0">import </span><span class="s1">com.google.firebase.database.DatabaseError; 
+</span><span class="s0">import </span><span class="s1">com.google.firebase.database.ValueEventListener; 
+ 
+</span><span class="s0">import </span><span class="s1">java.io.IOException; 
+</span><span class="s0">import </span><span class="s1">java.util.List; 
+ 
+</span><span class="s0">import static </span><span class="s1">com.example.user.activityfinder.MainActivity.UserRef; 
+</span><span class="s0">import static </span><span class="s1">com.example.user.activityfinder.LoginActivity.loggeduser; 
+</span><span class="s0">import static </span><span class="s1">com.example.user.activityfinder.MainActivity.EventRef; 
+ 
+</span><span class="s0">public class </span><span class="s1">SearchActivity </span><span class="s0">extends </span><span class="s1">AppCompatActivity { 
+    Spinner spinner; 
+    Button search; 
+    EditText dFrom; 
+    </span><span class="s0">public static int </span><span class="s1">distanceFrom; 
+    </span><span class="s0">public static </span><span class="s1">String category; 
+ 
+ 
+    @Override 
+    </span><span class="s0">protected void </span><span class="s1">onCreate(Bundle savedInstanceState) { 
+        </span><span class="s0">super</span><span class="s1">.onCreate(savedInstanceState); 
+        setContentView(R.layout.activity_search); 
+        spinner = (Spinner) findViewById(R.id.spinner); 
+        search = (Button) findViewById(R.id.search); 
+        dFrom = (EditText) findViewById(R.id.edtDistance); 
+        search.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() { 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onClick(View view) { 
+                </span><span class="s2">//Takes the chosen category and the entered distance</span><span class="s1"> 
+                category = spinner.getSelectedItem().toString(); 
+                distanceFrom = Integer.parseInt(dFrom.getText().toString()); 
+                addCategory(); 
+                startActivity(</span><span class="s0">new </span><span class="s1">Intent(SearchActivity.</span><span class="s0">this</span><span class="s1">, GroupsActivity.</span><span class="s0">class</span><span class="s1">)); 
+            } 
+ 
+        }); 
+ 
+    } 
+ 
+    </span><span class="s2">//Setting the user's category to be the chosen category from the spinner</span><span class="s1"> 
+    </span><span class="s0">private void </span><span class="s1">addCategory() { 
+        UserRef.child(loggeduser.getUserid()).child(</span><span class="s3">&quot;category&quot;</span><span class="s1">).setValue(category); 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">checkIfExist() 
+    { 
+        EventRef.addListenerForSingleValueEvent(</span><span class="s0">new </span><span class="s1">ValueEventListener() { 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onDataChange(@NonNull DataSnapshot dataSnapshot) { 
+ 
+            } 
+ 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onCancelled(@NonNull DatabaseError databaseError) { 
+ 
+            } 
+        }); 
+    } 
+} 
+</span></pre>
+</body>
+</html>

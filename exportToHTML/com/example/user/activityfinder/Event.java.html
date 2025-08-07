@@ -1,0 +1,129 @@
+<html>
+<head>
+<title>Event.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #999999; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { color: rgb(0,0,0); }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+Event.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">package </span><span class="s1">com.example.user.activityfinder; 
+ 
+</span><span class="s0">import </span><span class="s1">java.util.ArrayList; 
+</span><span class="s0">import </span><span class="s1">java.util.List; 
+ 
+</span><span class="s0">public class </span><span class="s1">Event { 
+    </span><span class="s0">private </span><span class="s1">String name; 
+    </span><span class="s0">private </span><span class="s1">String host; 
+    </span><span class="s0">private </span><span class="s1">String category; 
+    </span><span class="s0">private </span><span class="s1">String date; 
+    </span><span class="s0">private </span><span class="s1">String time; 
+    </span><span class="s0">private </span><span class="s1">String place; </span><span class="s2">//address</span><span class="s1"> 
+    </span><span class="s0">private int </span><span class="s1">max; 
+    </span><span class="s0">private </span><span class="s1">ArrayList&lt;String&gt; visitorList; 
+    </span><span class="s0">private int </span><span class="s1">amount; 
+    </span><span class="s0">private boolean </span><span class="s1">ifDistance; 
+ 
+    </span><span class="s0">public </span><span class="s1">Event() { 
+    } 
+ 
+    </span><span class="s0">public </span><span class="s1">Event(String name, String host, String category, String date, String place, String time, </span><span class="s0">int </span><span class="s1">max, ArrayList&lt;String&gt; visitorList, </span><span class="s0">int </span><span class="s1">amount</span><span class="s2">/*, boolean ifDistance*/</span><span class="s1">) { 
+ 
+        </span><span class="s0">this</span><span class="s1">.name = name; 
+        </span><span class="s0">this</span><span class="s1">.host = host; 
+        </span><span class="s0">this</span><span class="s1">.category = category; 
+        </span><span class="s0">this</span><span class="s1">.date = date; 
+        </span><span class="s0">this</span><span class="s1">.place = place; 
+        </span><span class="s0">this</span><span class="s1">.time = time; 
+        </span><span class="s0">this</span><span class="s1">.max = max; 
+        </span><span class="s0">this</span><span class="s1">.visitorList = </span><span class="s0">new </span><span class="s1">ArrayList&lt;&gt;(); 
+        </span><span class="s0">this</span><span class="s1">.visitorList = visitorList; 
+        </span><span class="s0">this</span><span class="s1">.amount = amount; 
+    } 
+ 
+    </span><span class="s0">public </span><span class="s1">String getHost() { 
+        </span><span class="s0">return </span><span class="s1">host; 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">setHost(String host) { 
+        </span><span class="s0">this</span><span class="s1">.host = host; 
+    } 
+ 
+    </span><span class="s0">public </span><span class="s1">String getTime() { 
+        </span><span class="s0">return </span><span class="s1">time; 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">setTime(String time) { 
+        </span><span class="s0">this</span><span class="s1">.time = time; 
+    } 
+ 
+    </span><span class="s0">public </span><span class="s1">String getCategory() { 
+        </span><span class="s0">return </span><span class="s1">category; 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">setCategory(String category) { 
+        </span><span class="s0">this</span><span class="s1">.category = category; 
+    } 
+ 
+    </span><span class="s0">public </span><span class="s1">String getDate() { 
+        </span><span class="s0">return </span><span class="s1">date; 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">setDate(String date) { 
+        </span><span class="s0">this</span><span class="s1">.date = date; 
+    } 
+ 
+    </span><span class="s0">public </span><span class="s1">String getName() { 
+        </span><span class="s0">return </span><span class="s1">name; 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">setName(String name) { 
+        </span><span class="s0">this</span><span class="s1">.name = name; 
+    } 
+ 
+    </span><span class="s0">public </span><span class="s1">String getPlace() { 
+        </span><span class="s0">return </span><span class="s1">place; 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">setPlace(String place) { 
+        </span><span class="s0">this</span><span class="s1">.place = place; 
+    } 
+ 
+    </span><span class="s0">public int </span><span class="s1">getMax() { 
+        </span><span class="s0">return </span><span class="s1">max; 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">setMax(</span><span class="s0">int </span><span class="s1">max) { 
+        </span><span class="s0">this</span><span class="s1">.max = max; 
+    } 
+ 
+    </span><span class="s0">public </span><span class="s1">ArrayList&lt;String&gt; getVisitorList() { 
+        </span><span class="s0">return </span><span class="s1">visitorList; 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">setVisitorList(ArrayList&lt;String&gt; visitorList) { 
+        </span><span class="s0">this</span><span class="s1">.visitorList = visitorList; 
+    } 
+ 
+    </span><span class="s0">public int </span><span class="s1">getAmount() { 
+        </span><span class="s0">return </span><span class="s1">amount; 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">setAmount(</span><span class="s0">int </span><span class="s1">amount) { 
+        </span><span class="s0">this</span><span class="s1">.amount = amount; 
+    } 
+ 
+} 
+ 
+</span></pre>
+</body>
+</html>

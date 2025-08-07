@@ -1,0 +1,267 @@
+<html>
+<head>
+<title>GroupsActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #999999; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { color: rgb(0,0,0); }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+.s3 { color: rgb(0,0,255); }
+.s4 { color: rgb(0,128,0); font-weight: bold; }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+GroupsActivity.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">package </span><span class="s1">com.example.user.activityfinder; 
+ 
+</span><span class="s0">import </span><span class="s1">android.app.Dialog; 
+</span><span class="s0">import </span><span class="s1">android.content.Intent; 
+</span><span class="s0">import </span><span class="s1">android.support.v7.app.AppCompatActivity; 
+</span><span class="s0">import </span><span class="s1">android.os.Bundle; 
+</span><span class="s0">import </span><span class="s1">android.support.annotation.NonNull; 
+ 
+</span><span class="s0">import </span><span class="s1">android.view.View; 
+</span><span class="s0">import </span><span class="s1">android.widget.AdapterView; 
+</span><span class="s0">import </span><span class="s1">android.widget.ArrayAdapter; 
+</span><span class="s0">import </span><span class="s1">android.widget.Button; 
+</span><span class="s0">import </span><span class="s1">android.widget.ListView; 
+</span><span class="s0">import </span><span class="s1">android.widget.Spinner; 
+</span><span class="s0">import </span><span class="s1">android.widget.Toast; 
+ 
+</span><span class="s0">import </span><span class="s1">com.google.firebase.database.DataSnapshot; 
+</span><span class="s0">import </span><span class="s1">com.google.firebase.database.DatabaseError; 
+</span><span class="s0">import </span><span class="s1">com.google.firebase.database.DatabaseReference; 
+</span><span class="s0">import </span><span class="s1">com.google.firebase.database.FirebaseDatabase; 
+</span><span class="s0">import </span><span class="s1">com.google.firebase.database.Query; 
+</span><span class="s0">import </span><span class="s1">com.google.firebase.database.ValueEventListener; 
+ 
+</span><span class="s0">import </span><span class="s1">java.util.ArrayList; 
+</span><span class="s0">import </span><span class="s1">java.util.HashSet; 
+</span><span class="s0">import </span><span class="s1">java.util.Iterator; 
+</span><span class="s0">import </span><span class="s1">java.util.Set; 
+ 
+</span><span class="s2">//import static com.example.user.activityfinder.CreateEventActivity.event1;</span><span class="s1"> 
+</span><span class="s0">import static </span><span class="s1">com.example.user.activityfinder.MapsActivity.ifDistance; 
+</span><span class="s0">import static </span><span class="s1">com.example.user.activityfinder.SearchActivity.category; 
+</span><span class="s0">import static </span><span class="s1">com.example.user.activityfinder.EventListActivity.eventList; 
+</span><span class="s0">import static </span><span class="s1">com.example.user.activityfinder.LoginActivity.loggeduser; 
+</span><span class="s0">import static </span><span class="s1">com.example.user.activityfinder.MainActivity.nFirebaseDatabase; 
+</span><span class="s0">import static </span><span class="s1">com.example.user.activityfinder.MainActivity.UserRef; 
+</span><span class="s0">import static </span><span class="s1">com.example.user.activityfinder.MainActivity.EventRef; 
+</span><span class="s0">import static </span><span class="s1">com.example.user.activityfinder.SearchActivity.distanceFrom; 
+ 
+</span><span class="s0">public class </span><span class="s1">GroupsActivity </span><span class="s0">extends </span><span class="s1">AppCompatActivity { 
+ 
+    </span><span class="s0">private </span><span class="s1">View groupActivityView; 
+    </span><span class="s0">public static </span><span class="s1">ListView list_view; 
+    </span><span class="s0">private </span><span class="s1">ArrayAdapter&lt;String&gt; arrayAdapter; 
+    </span><span class="s0">public static </span><span class="s1">ArrayList&lt;String&gt; list_of_groups = </span><span class="s0">new </span><span class="s1">ArrayList&lt;&gt;(); 
+    </span><span class="s0">private </span><span class="s1">DatabaseReference EventRef; 
+    </span><span class="s0">private int </span><span class="s1">c=</span><span class="s3">0</span><span class="s1">; 
+    </span><span class="s0">private  </span><span class="s1">ArrayList&lt;String&gt; users=</span><span class="s0">new </span><span class="s1">ArrayList&lt;&gt;(); 
+    </span><span class="s0">private boolean </span><span class="s1">ok=</span><span class="s0">false</span><span class="s1">; 
+    </span><span class="s0">public static int </span><span class="s1">n; 
+    </span><span class="s0">public static boolean </span><span class="s1">ifClickedHost; 
+    Button btnMap; 
+ 
+ 
+ 
+ 
+ 
+    @Override 
+    </span><span class="s0">protected void </span><span class="s1">onCreate(Bundle savedInstanceState) { 
+        </span><span class="s0">super</span><span class="s1">.onCreate(savedInstanceState); 
+        setContentView(R.layout.activity_groups); 
+ 
+        EventRef = FirebaseDatabase.getInstance().getReference().child(</span><span class="s4">&quot;Event&quot;</span><span class="s1">); 
+        InitalizeFields(); 
+        RetriveAndDisplayGroups(); 
+        btnMap.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() { 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onClick(View v) { 
+                </span><span class="s2">//Click on the button opens the EventListActivity and instantly the maps activity</span><span class="s1"> 
+                startActivity(</span><span class="s0">new </span><span class="s1">Intent(GroupsActivity.</span><span class="s0">this</span><span class="s1">,EventListActivity.</span><span class="s0">class</span><span class="s1">)); 
+            } 
+        }); 
+        list_view.setOnItemClickListener(</span><span class="s0">new </span><span class="s1">AdapterView.OnItemClickListener() { 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onItemClick(AdapterView&lt;?&gt; adapterView, View view, </span><span class="s0">int </span><span class="s1">position, </span><span class="s0">long </span><span class="s1">id) { 
+                </span><span class="s2">//When the event is clicked it opens the GroupChatActivity and calls the setVisitiorsList method</span><span class="s1"> 
+                </span><span class="s0">final </span><span class="s1">String currentGroupName = adapterView.getItemAtPosition(position).toString(); 
+                setVisitorsList(currentGroupName); 
+            }}); 
+ 
+    } 
+ 
+ 
+ 
+</span><span class="s2">//if the user isnt host it opens dialog so he can choose if he wants to chat the whole group or just the host</span><span class="s1"> 
+    </span><span class="s0">public void </span><span class="s1">openDialog(</span><span class="s0">final </span><span class="s1">String thisEvent) { 
+        </span><span class="s0">final </span><span class="s1">Dialog dialog = </span><span class="s0">new </span><span class="s1">Dialog(</span><span class="s0">this</span><span class="s1">); </span><span class="s2">// Context, this, etc.</span><span class="s1"> 
+        dialog.setContentView(R.layout.dialog); 
+        dialog.setTitle(</span><span class="s4">&quot;Choose&quot;</span><span class="s1">); 
+        dialog.show(); 
+        Button bt_host = (Button)dialog.findViewById(R.id.dialog_host); 
+        Button bt_group = (Button)dialog.findViewById(R.id.dialog_group); 
+        bt_host.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() { 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onClick(View v) { 
+                </span><span class="s2">//if he chose host it opens the chat to the host window</span><span class="s1"> 
+                ifClickedHost=</span><span class="s0">true</span><span class="s1">; 
+                Intent groupChatIntent = </span><span class="s0">new </span><span class="s1">Intent(GroupsActivity.</span><span class="s0">this</span><span class="s1">, GroupsChatActivity.</span><span class="s0">class</span><span class="s1">); 
+                groupChatIntent.putExtra(</span><span class="s4">&quot;groupName&quot;</span><span class="s1">, thisEvent); 
+                startActivity(groupChatIntent); 
+ 
+            } 
+        }); 
+        bt_group.setOnClickListener( 
+                </span><span class="s0">new </span><span class="s1">View.OnClickListener() { 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onClick(View v) { 
+                </span><span class="s2">//if he chose all it opens the chat to the whole group window</span><span class="s1"> 
+                ifClickedHost=</span><span class="s0">false</span><span class="s1">; 
+                Intent groupChatIntent = </span><span class="s0">new </span><span class="s1">Intent(GroupsActivity.</span><span class="s0">this</span><span class="s1">, GroupsChatActivity.</span><span class="s0">class</span><span class="s1">); 
+                groupChatIntent.putExtra(</span><span class="s4">&quot;groupName&quot;</span><span class="s1">, thisEvent); 
+                startActivity(groupChatIntent); 
+                dialog.dismiss(); 
+            } 
+        }); 
+        dialog.show(); 
+ 
+    } 
+ 
+ 
+</span><span class="s2">//Initalize the fields method</span><span class="s1"> 
+    </span><span class="s0">private void </span><span class="s1">InitalizeFields() 
+    { 
+        list_view = (ListView) findViewById(R.id.list_view1); 
+        arrayAdapter = </span><span class="s0">new </span><span class="s1">ArrayAdapter&lt;String&gt;(getApplicationContext(), android.R.layout.simple_list_item_1, list_of_groups); 
+        list_view.setAdapter(arrayAdapter); 
+        btnMap=(Button) findViewById(R.id.btnMap); 
+ 
+    } 
+ 
+</span><span class="s2">//Retriving and displaying groups method</span><span class="s1"> 
+    </span><span class="s0">private void </span><span class="s1">RetriveAndDisplayGroups() 
+    { 
+        EventRef.addValueEventListener(</span><span class="s0">new </span><span class="s1">ValueEventListener() { 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onDataChange(@NonNull DataSnapshot dataSnapshot) 
+            { 
+                Set&lt;String&gt; set = </span><span class="s0">new </span><span class="s1">HashSet&lt;&gt;(); 
+                </span><span class="s2">/* 
+                Iterator iterator = dataSnapshot.getChildren().iterator(); 
+                while (iterator.hasNext()) 
+                { 
+                        set.add(((DataSnapshot) iterator.next()).getKey()); 
+                } 
+*/</span><span class="s1"> 
+                </span><span class="s0">for </span><span class="s1">(DataSnapshot snap :dataSnapshot.getChildren()) { 
+                    </span><span class="s2">//Takes each event in the firebase via snap and takes it's category and name</span><span class="s1"> 
+                    String categoryFromFB=snap.child(</span><span class="s4">&quot;category&quot;</span><span class="s1">).getValue(String.</span><span class="s0">class</span><span class="s1">); 
+                    String nameFromFB = snap.child(</span><span class="s4">&quot;name&quot;</span><span class="s1">).getValue(String.</span><span class="s0">class</span><span class="s1">); 
+                    </span><span class="s0">if </span><span class="s1">(categoryFromFB.equals(SearchActivity.category)) 
+                    { 
+                        </span><span class="s2">//adding the event name to the Arraylist if the category equals to the chose category</span><span class="s1"> 
+                        set.add(nameFromFB); 
+ 
+ 
+                    } 
+                } 
+ 
+                list_of_groups.clear(); 
+                list_of_groups.addAll(set); 
+                arrayAdapter.notifyDataSetChanged(); 
+            } 
+ 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onCancelled(@NonNull DatabaseError databaseError) { 
+ 
+            } 
+        }) ; 
+    } 
+ 
+    </span><span class="s2">//Setting the visitors list of each event and the amount of people of each event</span><span class="s1"> 
+    </span><span class="s0">public void </span><span class="s1">setVisitorsList(</span><span class="s0">final </span><span class="s1">String eventname) { 
+ 
+        EventRef.addListenerForSingleValueEvent(</span><span class="s0">new </span><span class="s1">ValueEventListener() { 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onDataChange(@NonNull DataSnapshot dataSnapshot) { 
+                </span><span class="s0">if</span><span class="s1">(dataSnapshot.child(eventname).exists()) { 
+                    </span><span class="s2">//Getting the visitorlist of each event and changing the amount of people</span><span class="s1"> 
+                    Event myEvent = dataSnapshot.child(eventname).getValue(Event.</span><span class="s0">class</span><span class="s1">); 
+                    ArrayList&lt;String&gt; visitorList=</span><span class="s0">new </span><span class="s1">ArrayList&lt;&gt;(); 
+                    visitorList=myEvent.getVisitorList(); 
+                    EventRef.child(eventname).child(</span><span class="s4">&quot;amount&quot;</span><span class="s1">).setValue(visitorList.size()); 
+                    c=visitorList.size(); 
+                    </span><span class="s0">boolean </span><span class="s1">ok=</span><span class="s0">true</span><span class="s1">; 
+                    </span><span class="s2">//the boolean ok is used in order to know if the logged user is host or not and if he can enter the event chat true=cant enter false=can enter</span><span class="s1"> 
+                    </span><span class="s0">for</span><span class="s1">(</span><span class="s0">int </span><span class="s1">i=</span><span class="s3">0</span><span class="s1">;i&lt;visitorList.size();i++) { 
+                        </span><span class="s0">if </span><span class="s1">(visitorList.get(i).equals(loggeduser.getUserid())&amp;&amp;!loggeduser.getUserid().equals(myEvent.getHost())) { 
+                            </span><span class="s2">//if the user is already in the event and hes not host he can enter the event chat</span><span class="s1"> 
+                            ok = </span><span class="s0">false</span><span class="s1">; 
+                        } 
+                        </span><span class="s0">else</span><span class="s1">{ 
+                            </span><span class="s2">//if hes not in the event hes added</span><span class="s1"> 
+                            visitorList.add(loggeduser.getFirstName()+</span><span class="s4">&quot; &quot;</span><span class="s1">+loggeduser.getLastName()); 
+                            openDialog(eventname); 
+                        } 
+ 
+                    } 
+                        </span><span class="s0">if </span><span class="s1">(c &lt;= myEvent.getMax() &amp;&amp; !loggeduser.getUserid().equals(myEvent.getHost())&amp;&amp; loggeduser.getEvent().equals(eventname) &amp;&amp; ok==</span><span class="s0">true</span><span class="s1">) { 
+                        </span><span class="s2">// if the amount is less the max and the logged user isnt host and isnt in the event he enters the event, also it updates the amount of pepole in the event</span><span class="s1"> 
+                            visitorList.add(loggeduser.getUserid()); 
+                            c++; 
+                            myEvent.setAmount(c); 
+                            EventRef.child(eventname).child(</span><span class="s4">&quot;amount&quot;</span><span class="s1">).setValue(c); 
+                            myEvent.setVisitorList(users); 
+                            EventRef.child(eventname).child(</span><span class="s4">&quot;visitorList&quot;</span><span class="s1">).setValue(visitorList); 
+                            openDialog(eventname); 
+ 
+                        } 
+                        </span><span class="s0">else if</span><span class="s1">(loggeduser.getUserid().equals(myEvent.getHost())) { 
+                        </span><span class="s2">//if the user is host it opens the groupchat for the host</span><span class="s1"> 
+                            Intent groupChatIntent = </span><span class="s0">new </span><span class="s1">Intent(GroupsActivity.</span><span class="s0">this</span><span class="s1">, GroupsChatActivity.</span><span class="s0">class</span><span class="s1">); 
+                            groupChatIntent.putExtra(</span><span class="s4">&quot;groupName&quot;</span><span class="s1">, eventname); 
+                            startActivity(groupChatIntent); 
+                        } 
+ 
+                        </span><span class="s0">else if</span><span class="s1">(ok==</span><span class="s0">false</span><span class="s1">) { 
+                        </span><span class="s2">//if the user is already in the event and hes not host it opens the dialog in which he can choose whether to chat to the host or the whole group</span><span class="s1"> 
+                            openDialog(eventname); 
+ 
+                        } 
+ 
+                        </span><span class="s0">else if</span><span class="s1">(!loggeduser.getEvent().equals(eventname)) 
+                        { 
+                            </span><span class="s2">//if the logged user is in another event he cant enter the chat of this event</span><span class="s1"> 
+                            Toast.makeText(GroupsActivity.</span><span class="s0">this</span><span class="s1">, </span><span class="s4">&quot;Failed&quot;</span><span class="s1">, Toast.LENGTH_SHORT).show(); 
+                        } 
+                    } 
+ 
+ 
+ 
+ 
+ 
+                } 
+ 
+ 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onCancelled(@NonNull DatabaseError databaseError) { 
+ 
+ 
+            } 
+        }); 
+ 
+ 
+    } 
+} 
+</span></pre>
+</body>
+</html>

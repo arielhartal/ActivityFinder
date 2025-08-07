@@ -1,0 +1,475 @@
+<html>
+<head>
+<title>GroupsChatActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #999999; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { color: rgb(0,0,0); }
+.s2 { color: rgb(0,128,0); font-weight: bold; }
+.s3 { color: rgb(128,128,128); font-style: italic; }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+GroupsChatActivity.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">package </span><span class="s1">com.example.user.activityfinder; 
+ 
+</span><span class="s0">import </span><span class="s1">android.support.annotation.NonNull; 
+</span><span class="s0">import </span><span class="s1">android.support.annotation.Nullable; 
+</span><span class="s0">import </span><span class="s1">android.support.v7.app.AppCompatActivity; 
+</span><span class="s0">import </span><span class="s1">android.os.Bundle; 
+</span><span class="s0">import </span><span class="s1">android.view.View; 
+</span><span class="s0">import </span><span class="s1">android.widget.ArrayAdapter; 
+</span><span class="s0">import </span><span class="s1">android.widget.Button; 
+</span><span class="s0">import </span><span class="s1">android.widget.EditText; 
+</span><span class="s0">import </span><span class="s1">android.widget.ScrollView; 
+</span><span class="s0">import </span><span class="s1">android.widget.Spinner; 
+</span><span class="s0">import </span><span class="s1">android.widget.TextView; 
+</span><span class="s0">import </span><span class="s1">android.widget.Toast; 
+</span><span class="s0">import </span><span class="s1">android.support.v7.widget.Toolbar; 
+ 
+</span><span class="s0">import </span><span class="s1">com.google.firebase.database.ChildEventListener; 
+</span><span class="s0">import </span><span class="s1">com.google.firebase.database.DataSnapshot; 
+</span><span class="s0">import </span><span class="s1">com.google.firebase.database.DatabaseError; 
+</span><span class="s0">import </span><span class="s1">com.google.firebase.database.DatabaseReference; 
+</span><span class="s0">import </span><span class="s1">com.google.firebase.database.FirebaseDatabase; 
+</span><span class="s0">import </span><span class="s1">com.google.firebase.database.ValueEventListener; 
+ 
+</span><span class="s0">import static </span><span class="s1">com.example.user.activityfinder.GroupsActivity.ifClickedHost; 
+</span><span class="s0">import static </span><span class="s1">com.example.user.activityfinder.MainActivity.EventRef; 
+</span><span class="s0">import static </span><span class="s1">com.example.user.activityfinder.GroupsActivity.n; 
+ 
+</span><span class="s0">import </span><span class="s1">java.text.SimpleDateFormat; 
+</span><span class="s0">import </span><span class="s1">java.util.ArrayList; 
+</span><span class="s0">import </span><span class="s1">java.util.Calendar; 
+</span><span class="s0">import </span><span class="s1">java.util.HashMap; 
+</span><span class="s0">import </span><span class="s1">java.util.Iterator; 
+</span><span class="s0">import </span><span class="s1">java.util.List; 
+</span><span class="s0">import </span><span class="s1">android.content.Context; 
+ 
+</span><span class="s0">import static </span><span class="s1">com.example.user.activityfinder.LoginActivity.loggeduser; 
+ 
+</span><span class="s0">public class </span><span class="s1">GroupsChatActivity </span><span class="s0">extends </span><span class="s1">AppCompatActivity { 
+ 
+    </span><span class="s0">private </span><span class="s1">Button SendMessageToAll; 
+    </span><span class="s0">private </span><span class="s1">Button SendMessageToPerson; 
+    </span><span class="s0">private </span><span class="s1">Button SendMessageToHost; 
+    </span><span class="s0">private </span><span class="s1">EditText userMessageInput; 
+    </span><span class="s0">private </span><span class="s1">ScrollView mScrollView; 
+    </span><span class="s0">private </span><span class="s1">TextView displayTextMessages; 
+    </span><span class="s0">private </span><span class="s1">String currentGroupName ,currentDate, currentTime; 
+    </span><span class="s0">private </span><span class="s1">DatabaseReference groupNameReference, groupMessageKeyReference; 
+    Spinner spinnerUsers; 
+    Context context; 
+    Boolean ifAllClicked=</span><span class="s0">false</span><span class="s1">; 
+ 
+ 
+    @Override 
+    </span><span class="s0">protected void </span><span class="s1">onCreate(Bundle savedInstanceState) { 
+        </span><span class="s0">super</span><span class="s1">.onCreate(savedInstanceState); 
+        setContentView(R.layout.activity_group_chat); 
+        addItemsOnSpinner(); 
+ 
+        context=</span><span class="s0">this</span><span class="s1">; 
+ 
+        currentGroupName = getIntent().getExtras().get(</span><span class="s2">&quot;groupName&quot;</span><span class="s1">).toString(); 
+ 
+ 
+ 
+        groupNameReference = FirebaseDatabase.getInstance().getReference().child(</span><span class="s2">&quot;Event&quot;</span><span class="s1">).child(currentGroupName); 
+        groupNameReference.addListenerForSingleValueEvent(</span><span class="s0">new </span><span class="s1">ValueEventListener() { 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onDataChange(@NonNull DataSnapshot dataSnapshot) { 
+                InitializeFields(); 
+                </span><span class="s3">//Checking which user is entered and checking if he wants to chat the whole group or the host if hes not host</span><span class="s1"> 
+                Event e = dataSnapshot.getValue(Event.</span><span class="s0">class</span><span class="s1">); 
+                </span><span class="s0">if </span><span class="s1">(!(loggeduser.getUserid().equals(e.getHost())) &amp;&amp; ifClickedHost == </span><span class="s0">true</span><span class="s1">) { 
+                    </span><span class="s3">//if the user isnt host and he chose host it opens the chat to host window</span><span class="s1"> 
+                    SendMessageToPerson.setVisibility(View.GONE); 
+                    SendMessageToAll.setVisibility(View.GONE); 
+                    spinnerUsers.setVisibility(View.GONE); 
+                    currentGroupName = getIntent().getExtras().get(</span><span class="s2">&quot;groupName&quot;</span><span class="s1">).toString(); 
+                    Toast.makeText(GroupsChatActivity.</span><span class="s0">this</span><span class="s1">, currentGroupName + </span><span class="s2">&quot;: &quot; </span><span class="s1">+ </span><span class="s2">&quot;Host&quot;</span><span class="s1">, Toast.LENGTH_SHORT).show(); 
+ 
+                } 
+                </span><span class="s0">if </span><span class="s1">(!(loggeduser.getUserid().equals(e.getHost())) &amp;&amp; ifClickedHost == </span><span class="s0">false</span><span class="s1">) { 
+                    </span><span class="s3">//if the user isnt host and he chose all it opens the chat to group window</span><span class="s1"> 
+                    SendMessageToPerson.setVisibility(View.GONE); 
+                    SendMessageToHost.setVisibility(View.GONE); 
+                    spinnerUsers.setVisibility(View.GONE); 
+                    currentGroupName = getIntent().getExtras().get(</span><span class="s2">&quot;groupName&quot;</span><span class="s1">).toString(); 
+                    Toast.makeText(GroupsChatActivity.</span><span class="s0">this</span><span class="s1">, currentGroupName + </span><span class="s2">&quot;: &quot; </span><span class="s1">+ </span><span class="s2">&quot;Group&quot;</span><span class="s1">, Toast.LENGTH_SHORT).show(); 
+ 
+                } 
+ 
+                </span><span class="s0">if </span><span class="s1">(loggeduser.getUserid().equals(e.getHost())) { 
+                    </span><span class="s3">//if the user is host it opens the host chat window</span><span class="s1"> 
+                    SendMessageToHost.setVisibility(View.GONE); 
+                    currentGroupName = getIntent().getExtras().get(</span><span class="s2">&quot;groupName&quot;</span><span class="s1">).toString(); 
+                    Toast.makeText(GroupsChatActivity.</span><span class="s0">this</span><span class="s1">, currentGroupName ,Toast.LENGTH_SHORT).show(); 
+ 
+ 
+                } 
+ 
+ 
+            } 
+ 
+ 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onCancelled(@NonNull DatabaseError databaseError) { 
+ 
+            } 
+        }); 
+ 
+ 
+    } 
+ 
+ 
+   </span><span class="s0">protected void </span><span class="s1">onStart() 
+   { 
+       </span><span class="s0">super</span><span class="s1">.onStart(); 
+ 
+       
+       groupNameReference.addChildEventListener(</span><span class="s0">new </span><span class="s1">ChildEventListener() { 
+           @Override 
+           </span><span class="s0">public void </span><span class="s1">onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { 
+               String key = dataSnapshot.getKey(); 
+               </span><span class="s0">if </span><span class="s1">(dataSnapshot.exists() &amp;&amp; !key.equals(</span><span class="s2">&quot;visitorList&quot;</span><span class="s1">)) { </span><span class="s3">// prevent getting inside data of a key with children (visitorList)</span><span class="s1"> 
+                   </span><span class="s3">//calling the display messages method</span><span class="s1"> 
+                displayMessages(dataSnapshot); 
+               } 
+           } 
+ 
+           @Override 
+           </span><span class="s0">public void </span><span class="s1">onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { 
+               </span><span class="s0">if </span><span class="s1">(dataSnapshot.exists()) { 
+                   displayMessages(dataSnapshot); 
+               } 
+ 
+           } 
+ 
+           @Override 
+           </span><span class="s0">public void </span><span class="s1">onChildRemoved(@NonNull DataSnapshot dataSnapshot) { 
+ 
+           } 
+ 
+           @Override 
+           </span><span class="s0">public void </span><span class="s1">onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { 
+ 
+           } 
+ 
+           @Override 
+           </span><span class="s0">public void </span><span class="s1">onCancelled(@NonNull DatabaseError databaseError) { 
+ 
+           } 
+       }); 
+ 
+   } 
+ 
+ 
+   </span><span class="s3">//Adding the visitorlist to the spinner</span><span class="s1"> 
+    </span><span class="s0">public void </span><span class="s1">addItemsOnSpinner() { 
+ 
+        spinnerUsers = (Spinner) findViewById(R.id.spinnerUsers); 
+        EventRef.addListenerForSingleValueEvent(</span><span class="s0">new </span><span class="s1">ValueEventListener() { 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onDataChange(@NonNull DataSnapshot dataSnapshot) { 
+                </span><span class="s0">if</span><span class="s1">(dataSnapshot.child(currentGroupName).exists()) { 
+                    Event myEvent = dataSnapshot.child(currentGroupName).getValue(Event.</span><span class="s0">class</span><span class="s1">); 
+                    ArrayList&lt;String&gt; usersList=</span><span class="s0">new </span><span class="s1">ArrayList&lt;&gt;(); 
+                    usersList=myEvent.getVisitorList(); 
+                    ArrayAdapter&lt;String&gt; dataAdapter = </span><span class="s0">new </span><span class="s1">ArrayAdapter&lt;String&gt;(context, 
+                            android.R.layout.simple_spinner_item,usersList); 
+                    dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); 
+                    spinnerUsers.setAdapter(dataAdapter); 
+                } 
+            } 
+ 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onCancelled(@NonNull DatabaseError databaseError) { 
+ 
+            } 
+        }); 
+ 
+ 
+ 
+ 
+ 
+    } 
+ 
+ 
+ 
+ 
+ 
+ 
+</span><span class="s3">//initializing the fields</span><span class="s1"> 
+    </span><span class="s0">private void </span><span class="s1">InitializeFields() 
+    { 
+        getSupportActionBar().setTitle(currentGroupName); 
+        SendMessageToAll =(Button) findViewById(R.id.send_message_everyone); 
+        userMessageInput = (EditText) findViewById(R.id.input_group_message); 
+        SendMessageToPerson=(Button) findViewById(R.id.send_message_person); 
+        SendMessageToHost=(Button) findViewById(R.id.send_message_host); 
+        displayTextMessages = (TextView) findViewById(R.id.group_chat_text_display); 
+        mScrollView = (ScrollView) findViewById(R.id.my_scroll_view); 
+        SendMessageToAll.setVisibility(View.VISIBLE); 
+        SendMessageToPerson.setVisibility(View.VISIBLE); 
+        SendMessageToHost.setVisibility(View.VISIBLE); 
+        userMessageInput.setVisibility(View.VISIBLE); 
+        spinnerUsers= (Spinner) findViewById(R.id.spinnerUsers); 
+ 
+ 
+ 
+ 
+ 
+</span><span class="s3">//checking which button was clicked to know which case (sending message to all,person or to host)</span><span class="s1"> 
+        SendMessageToAll.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() { 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onClick(View view) { 
+                ifAllClicked=</span><span class="s0">true</span><span class="s1">; 
+                SaveMessageInfoToDatabase(); 
+                userMessageInput.setText(</span><span class="s2">&quot;&quot;</span><span class="s1">); 
+            } 
+        }); 
+ 
+        SendMessageToPerson.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() { 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onClick(View view) { 
+                ifAllClicked=</span><span class="s0">false</span><span class="s1">; 
+                SaveMessageInfoToDatabase(); 
+                userMessageInput.setText(</span><span class="s2">&quot;&quot;</span><span class="s1">); 
+            } 
+        }); 
+ 
+        SendMessageToHost.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() { 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onClick(View view) { 
+                SaveMessageInfoToDatabase(); 
+                userMessageInput.setText(</span><span class="s2">&quot;&quot;</span><span class="s1">); 
+            } 
+        }); 
+ 
+ 
+ 
+    } 
+ 
+    </span><span class="s3">//Saving the message info to the database method</span><span class="s1"> 
+    </span><span class="s0">private void </span><span class="s1">SaveMessageInfoToDatabase() 
+    { 
+      </span><span class="s0">final   </span><span class="s1">String message = userMessageInput.getText().toString(); 
+      </span><span class="s0">final   </span><span class="s1">String messageKey = groupNameReference.push().getKey(); 
+      </span><span class="s0">final   </span><span class="s1">String selectedUser=spinnerUsers.getSelectedItem().toString(); 
+           EventRef.addListenerForSingleValueEvent(</span><span class="s0">new </span><span class="s1">ValueEventListener() { 
+                    @Override 
+                    </span><span class="s3">//checking what case is it (host to all, host to person , person to all , person to host) and then saving the message info to the database</span><span class="s1"> 
+                    </span><span class="s0">public void </span><span class="s1">onDataChange(@NonNull DataSnapshot dataSnapshot) { 
+                        Event myEvent = dataSnapshot.child(currentGroupName).getValue(Event.</span><span class="s0">class</span><span class="s1">); 
+ 
+                        </span><span class="s0">if </span><span class="s1">(!loggeduser.getUserid().equals(myEvent.getHost()) &amp;&amp; ifClickedHost == </span><span class="s0">true</span><span class="s1">)</span><span class="s3">//add selectsiza</span><span class="s1"> 
+                        { 
+                            String to = </span><span class="s2">&quot;To: Host: &quot; </span><span class="s1">+ (myEvent.getHost().toString()); 
+ 
+                            </span><span class="s0">if</span><span class="s1">(message.isEmpty()) 
+                            { 
+                                Toast.makeText(GroupsChatActivity.</span><span class="s0">this</span><span class="s1">, </span><span class="s2">&quot;Please Write A Message First...&quot;</span><span class="s1">, Toast.LENGTH_SHORT).show(); 
+                            } 
+                            </span><span class="s0">else</span><span class="s1"> 
+                            { 
+                                Calendar calForDate = Calendar.getInstance(); 
+                                SimpleDateFormat currentDateFormat = </span><span class="s0">new </span><span class="s1">SimpleDateFormat(</span><span class="s2">&quot;MMM dd, yyyy&quot;</span><span class="s1">); 
+                                currentDate = currentDateFormat.format(calForDate.getTime()); 
+ 
+                                Calendar calForTime = Calendar.getInstance(); 
+                                SimpleDateFormat currentTimeFormat = </span><span class="s0">new </span><span class="s1">SimpleDateFormat(</span><span class="s2">&quot;hh:mm&quot;</span><span class="s1">); 
+                                currentTime = currentTimeFormat.format(calForTime.getTime()); 
+ 
+                                HashMap&lt;String, Object&gt; groupMessageKey = </span><span class="s0">new </span><span class="s1">HashMap&lt;&gt;(); 
+                                groupNameReference.updateChildren(groupMessageKey); 
+                                groupMessageKeyReference = groupNameReference.child(messageKey); 
+ 
+                                HashMap&lt;String, Object&gt; messageInfo = </span><span class="s0">new </span><span class="s1">HashMap&lt;&gt;(); 
+                                messageInfo.put(</span><span class="s2">&quot;name&quot;</span><span class="s1">, loggeduser.getFirstName()+</span><span class="s2">&quot; &quot;</span><span class="s1">+ loggeduser.getLastName()); 
+                                messageInfo.put(</span><span class="s2">&quot;date&quot;</span><span class="s1">, currentDate); 
+                                messageInfo.put(</span><span class="s2">&quot;time&quot;</span><span class="s1">, currentTime); 
+                                messageInfo.put(</span><span class="s2">&quot;message&quot;</span><span class="s1">, message); 
+                                messageInfo.put(</span><span class="s2">&quot;To&quot;</span><span class="s1">, to); 
+ 
+                                groupMessageKeyReference.updateChildren(messageInfo); 
+ 
+ 
+ 
+                            } 
+ 
+ 
+                        } 
+ 
+                        </span><span class="s0">if </span><span class="s1">(!loggeduser.getUserid().equals(myEvent.getHost()) &amp;&amp; ifClickedHost == </span><span class="s0">false</span><span class="s1">)</span><span class="s3">//add selectsiza</span><span class="s1"> 
+                        { 
+                            String to = </span><span class="s2">&quot;To: All &quot; </span><span class="s1">; 
+ 
+                            </span><span class="s0">if</span><span class="s1">(message.isEmpty()) 
+                            { 
+                                Toast.makeText(GroupsChatActivity.</span><span class="s0">this</span><span class="s1">, </span><span class="s2">&quot;Please Write A Message First...&quot;</span><span class="s1">, Toast.LENGTH_SHORT).show(); 
+                            } 
+                            </span><span class="s0">else</span><span class="s1"> 
+                            { 
+                                Calendar calForDate = Calendar.getInstance(); 
+                                SimpleDateFormat currentDateFormat = </span><span class="s0">new </span><span class="s1">SimpleDateFormat(</span><span class="s2">&quot;MMM dd, yyyy&quot;</span><span class="s1">); 
+                                currentDate = currentDateFormat.format(calForDate.getTime()); 
+ 
+                                Calendar calForTime = Calendar.getInstance(); 
+                                SimpleDateFormat currentTimeFormat = </span><span class="s0">new </span><span class="s1">SimpleDateFormat(</span><span class="s2">&quot;hh:mm&quot;</span><span class="s1">); 
+                                currentTime = currentTimeFormat.format(calForTime.getTime()); 
+ 
+                                HashMap&lt;String, Object&gt; groupMessageKey = </span><span class="s0">new </span><span class="s1">HashMap&lt;&gt;(); 
+                                groupNameReference.updateChildren(groupMessageKey); 
+                                groupMessageKeyReference = groupNameReference.child(messageKey); 
+ 
+                                HashMap&lt;String, Object&gt; messageInfo = </span><span class="s0">new </span><span class="s1">HashMap&lt;&gt;(); 
+                                messageInfo.put(</span><span class="s2">&quot;name&quot;</span><span class="s1">, loggeduser.getFirstName()+</span><span class="s2">&quot; &quot;</span><span class="s1">+ loggeduser.getLastName()); 
+                                messageInfo.put(</span><span class="s2">&quot;date&quot;</span><span class="s1">, currentDate); 
+                                messageInfo.put(</span><span class="s2">&quot;time&quot;</span><span class="s1">, currentTime); 
+                                messageInfo.put(</span><span class="s2">&quot;message&quot;</span><span class="s1">, message); 
+                                messageInfo.put(</span><span class="s2">&quot;To&quot;</span><span class="s1">, to); 
+ 
+                                groupMessageKeyReference.updateChildren(messageInfo); 
+ 
+ 
+ 
+                            } 
+ 
+ 
+                        } 
+ 
+                        </span><span class="s0">if </span><span class="s1">(loggeduser.getUserid().equals(myEvent.getHost())&amp;&amp;ifAllClicked==</span><span class="s0">false</span><span class="s1">) 
+                        { 
+                            String to = </span><span class="s2">&quot;To:    &quot;</span><span class="s1">+selectedUser; 
+ 
+                            </span><span class="s0">if</span><span class="s1">(message.isEmpty()) 
+                            { 
+                                Toast.makeText(GroupsChatActivity.</span><span class="s0">this</span><span class="s1">, </span><span class="s2">&quot;Please Write A Message First...&quot;</span><span class="s1">, Toast.LENGTH_SHORT).show(); 
+                            } 
+                            </span><span class="s0">else</span><span class="s1"> 
+                            { 
+                                Calendar calForDate = Calendar.getInstance(); 
+                                SimpleDateFormat currentDateFormat = </span><span class="s0">new </span><span class="s1">SimpleDateFormat(</span><span class="s2">&quot;MMM dd, yyyy&quot;</span><span class="s1">); 
+                                currentDate = currentDateFormat.format(calForDate.getTime()); 
+ 
+                                Calendar calForTime = Calendar.getInstance(); 
+                                SimpleDateFormat currentTimeFormat = </span><span class="s0">new </span><span class="s1">SimpleDateFormat(</span><span class="s2">&quot;hh:mm&quot;</span><span class="s1">); 
+                                currentTime = currentTimeFormat.format(calForTime.getTime()); 
+ 
+                                HashMap&lt;String, Object&gt; groupMessageKey = </span><span class="s0">new </span><span class="s1">HashMap&lt;&gt;(); 
+                                groupNameReference.updateChildren(groupMessageKey); 
+                                groupMessageKeyReference = groupNameReference.child(messageKey); 
+ 
+                                HashMap&lt;String, Object&gt; messageInfo = </span><span class="s0">new </span><span class="s1">HashMap&lt;&gt;(); 
+                                messageInfo.put(</span><span class="s2">&quot;name&quot;</span><span class="s1">, loggeduser.getFirstName()+</span><span class="s2">&quot; &quot;</span><span class="s1">+ loggeduser.getLastName()); 
+                                messageInfo.put(</span><span class="s2">&quot;date&quot;</span><span class="s1">, currentDate); 
+                                messageInfo.put(</span><span class="s2">&quot;time&quot;</span><span class="s1">, currentTime); 
+                                messageInfo.put(</span><span class="s2">&quot;message&quot;</span><span class="s1">, message); 
+                                messageInfo.put(</span><span class="s2">&quot;To&quot;</span><span class="s1">, to); 
+ 
+                                groupMessageKeyReference.updateChildren(messageInfo); 
+ 
+ 
+ 
+                            } 
+ 
+ 
+                        } 
+ 
+ 
+                        </span><span class="s0">if </span><span class="s1">(loggeduser.getUserid().equals(myEvent.getHost())&amp;&amp;ifAllClicked==</span><span class="s0">true</span><span class="s1">) 
+                        { 
+                            String to = </span><span class="s2">&quot;To: All &quot; </span><span class="s1">; 
+ 
+                            </span><span class="s0">if</span><span class="s1">(message.isEmpty()) 
+                            { 
+                                Toast.makeText(GroupsChatActivity.</span><span class="s0">this</span><span class="s1">, </span><span class="s2">&quot;Please Write A Message First...&quot;</span><span class="s1">, Toast.LENGTH_SHORT).show(); 
+                            } 
+                            </span><span class="s0">else</span><span class="s1"> 
+                            { 
+                                Calendar calForDate = Calendar.getInstance(); 
+                                SimpleDateFormat currentDateFormat = </span><span class="s0">new </span><span class="s1">SimpleDateFormat(</span><span class="s2">&quot;MMM dd, yyyy&quot;</span><span class="s1">); 
+                                currentDate = currentDateFormat.format(calForDate.getTime()); 
+ 
+                                Calendar calForTime = Calendar.getInstance(); 
+                                SimpleDateFormat currentTimeFormat = </span><span class="s0">new </span><span class="s1">SimpleDateFormat(</span><span class="s2">&quot;hh:mm&quot;</span><span class="s1">); 
+                                currentTime = currentTimeFormat.format(calForTime.getTime()); 
+ 
+                                HashMap&lt;String, Object&gt; groupMessageKey = </span><span class="s0">new </span><span class="s1">HashMap&lt;&gt;(); 
+                                groupNameReference.updateChildren(groupMessageKey); 
+                                groupMessageKeyReference = groupNameReference.child(messageKey); 
+ 
+                                HashMap&lt;String, Object&gt; messageInfo = </span><span class="s0">new </span><span class="s1">HashMap&lt;&gt;(); 
+                                messageInfo.put(</span><span class="s2">&quot;name&quot;</span><span class="s1">, loggeduser.getFirstName()+</span><span class="s2">&quot; &quot;</span><span class="s1">+ loggeduser.getLastName()); 
+                                messageInfo.put(</span><span class="s2">&quot;date&quot;</span><span class="s1">, currentDate); 
+                                messageInfo.put(</span><span class="s2">&quot;time&quot;</span><span class="s1">, currentTime); 
+                                messageInfo.put(</span><span class="s2">&quot;message&quot;</span><span class="s1">, message); 
+                                messageInfo.put(</span><span class="s2">&quot;To&quot;</span><span class="s1">, to); 
+ 
+                                groupMessageKeyReference.updateChildren(messageInfo); 
+ 
+ 
+ 
+                            } 
+ 
+ 
+                        } 
+ 
+ 
+ 
+                    } 
+ 
+ 
+                    @Override 
+                    </span><span class="s0">public void </span><span class="s1">onCancelled(@NonNull DatabaseError databaseError) { 
+ 
+                    } 
+                }); 
+ 
+ 
+    } 
+ 
+ 
+ </span><span class="s3">//displaying the messages method</span><span class="s1"> 
+    </span><span class="s0">public void </span><span class="s1">displayMessages(DataSnapshot dataSnapshot) 
+    { 
+        Iterator iterator = dataSnapshot.getChildren().iterator(); 
+ 
+            </span><span class="s0">while </span><span class="s1">(iterator.hasNext()) {  </span><span class="s3">//change order</span><span class="s1"> 
+ 
+ 
+ 
+ 
+                </span><span class="s0">final </span><span class="s1">String chatTo = (String) ((DataSnapshot) iterator.next()).getValue(); 
+                </span><span class="s0">final </span><span class="s1">String chatDate = (String) ((DataSnapshot) iterator.next()).getValue(); 
+                </span><span class="s0">final </span><span class="s1">String chatMessage = (String) ((DataSnapshot) iterator.next()).getValue(); 
+                </span><span class="s0">final </span><span class="s1">String chatName = (String) ((DataSnapshot) iterator.next()).getValue(); 
+                </span><span class="s0">final </span><span class="s1">String chatTime = (String) ((DataSnapshot) iterator.next()).getValue(); 
+ 
+                displayTextMessages.append(chatTo+</span><span class="s2">&quot;</span><span class="s0">\n</span><span class="s2">&quot;</span><span class="s1">+chatDate+</span><span class="s2">&quot;    &quot;</span><span class="s1">+chatTime+</span><span class="s2">&quot;    &quot;</span><span class="s1">+</span><span class="s2">&quot;</span><span class="s0">\n</span><span class="s2">&quot; </span><span class="s1">+ chatName+</span><span class="s2">&quot;:&quot; </span><span class="s1">+</span><span class="s2">&quot;</span><span class="s0">\n</span><span class="s2">&quot; </span><span class="s1">+chatMessage + </span><span class="s2">&quot;</span><span class="s0">\n\n\n</span><span class="s2">&quot;</span><span class="s1">); 
+ 
+ 
+ 
+ 
+                mScrollView.fullScroll(View.FOCUS_DOWN); 
+ 
+            } 
+            } 
+     } 
+ 
+ 
+ 
+ 
+ 
+ 
+</span></pre>
+</body>
+</html>

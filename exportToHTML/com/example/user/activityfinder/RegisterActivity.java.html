@@ -1,0 +1,90 @@
+<html>
+<head>
+<title>RegisterActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #999999; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { color: rgb(0,0,0); }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+.s3 { color: rgb(0,128,0); font-weight: bold; }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+RegisterActivity.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">package </span><span class="s1">com.example.user.activityfinder; 
+ 
+</span><span class="s0">import </span><span class="s1">android.content.Intent; 
+</span><span class="s0">import </span><span class="s1">android.support.annotation.NonNull; 
+</span><span class="s0">import </span><span class="s1">android.support.v7.app.AppCompatActivity; 
+</span><span class="s0">import </span><span class="s1">android.os.Bundle; 
+</span><span class="s0">import </span><span class="s1">android.view.View; 
+</span><span class="s0">import </span><span class="s1">android.widget.Button; 
+</span><span class="s0">import </span><span class="s1">android.widget.EditText; 
+ 
+</span><span class="s0">import </span><span class="s1">com.google.firebase.database.DataSnapshot; 
+</span><span class="s0">import </span><span class="s1">com.google.firebase.database.DatabaseError; 
+</span><span class="s0">import </span><span class="s1">com.google.firebase.database.ValueEventListener; 
+ 
+</span><span class="s0">import static </span><span class="s1">com.example.user.activityfinder.MainActivity.UserRef; 
+ 
+</span><span class="s0">public class </span><span class="s1">RegisterActivity </span><span class="s0">extends </span><span class="s1">AppCompatActivity { 
+    EditText edtemail; 
+    EditText edtpassword; 
+    EditText edtconfirm; 
+    EditText edtfirstname; 
+    EditText edtlastname; 
+    EditText edtgender; 
+    EditText edtage; 
+    EditText edtaddress; 
+    Button btnConfirm; 
+ 
+    @Override 
+    </span><span class="s0">protected void </span><span class="s1">onCreate(Bundle savedInstanceState) { 
+        </span><span class="s0">super</span><span class="s1">.onCreate(savedInstanceState); 
+        setContentView(R.layout.activity_register); 
+        edtemail = (EditText) findViewById(R.id.edtEmail); 
+        edtpassword = (EditText) findViewById(R.id.edtPassword); 
+        edtconfirm = (EditText) findViewById(R.id.edtConfirmPassword); 
+        edtfirstname = (EditText) findViewById(R.id.edtFirstName); 
+        edtlastname = (EditText) findViewById(R.id.edtLastName); 
+        edtgender = (EditText) findViewById(R.id.edtGender); 
+        edtage = (EditText) findViewById(R.id.edtAge); 
+        edtaddress=(EditText) findViewById(R.id.edtAddress); 
+        btnConfirm = (Button) findViewById(R.id.btnConfirm); 
+        btnConfirm.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() { 
+              @Override 
+              </span><span class="s0">public void </span><span class="s1">onClick(View view) { 
+                  </span><span class="s2">//The confirm button takes the values that have been entered</span><span class="s1"> 
+                  String email = edtemail.getText().toString(); 
+                  String password = edtpassword.getText().toString(); 
+                  String confirmpassword = edtconfirm.getText().toString(); 
+                  String firstname = edtfirstname.getText().toString(); 
+                  String lastname = edtlastname.getText().toString(); 
+                  String gender = edtgender.getText().toString(); 
+                  </span><span class="s0">int </span><span class="s1">age = Integer.valueOf(edtage.getText().toString()); 
+                  String address=edtaddress.getText().toString(); 
+                  </span><span class="s2">//Checking if the password field is equal to the confirm password field, if it is it creates the user with the entered values and the created user is created in the firebase database</span><span class="s1"> 
+                  </span><span class="s0">if </span><span class="s1">(password.equals(confirmpassword)) { 
+                      </span><span class="s0">final </span><span class="s1">User user1 = </span><span class="s0">new </span><span class="s1">User(email, password, firstname, lastname, age, gender,</span><span class="s3">&quot;&quot;</span><span class="s1">,</span><span class="s3">&quot;&quot;</span><span class="s1">,address); 
+                      UserRef.child(user1.getUserid()).setValue(user1); 
+ 
+                  } 
+ 
+                  startActivity(</span><span class="s0">new </span><span class="s1">Intent(RegisterActivity.</span><span class="s0">this</span><span class="s1">, LoginActivity.</span><span class="s0">class</span><span class="s1">)); 
+              } 
+ 
+          } 
+        ); 
+    } 
+} 
+ 
+ 
+</span></pre>
+</body>
+</html>
